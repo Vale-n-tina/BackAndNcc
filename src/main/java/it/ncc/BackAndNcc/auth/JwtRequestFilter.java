@@ -86,7 +86,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             "/v3/api-docs/**",
             "/error",
             "/sw.js",
-            "/prenotazioni/price-calculation"
+            "/prenotazioni/price-calculation",
+            "/prenotazioni/bookNow"
     );
 
 

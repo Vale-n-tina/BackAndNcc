@@ -18,4 +18,13 @@ public class PrenotazioneController {
         return prenotazioneService.priceCalculation(request);
     }
 
+
+    @PostMapping("/bookNow")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("permitAll()")
+    public void bookNow(@RequestBody PrenotazioneRequest request) {
+        prenotazioneService.bookNow(request);
+    }
+
+
 }

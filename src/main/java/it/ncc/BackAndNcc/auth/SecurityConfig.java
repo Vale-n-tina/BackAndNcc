@@ -40,6 +40,7 @@ public class SecurityConfig {
                         //.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // Accesso libero a Swagger
                         //.requestMatchers("/api/**").permitAll()
                         .requestMatchers("/prenotazioni/price-calculation").permitAll()
+                        .requestMatchers("/prenotazioni/bookNow").permitAll()
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session

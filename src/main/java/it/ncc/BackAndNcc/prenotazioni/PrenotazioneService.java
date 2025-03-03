@@ -1,6 +1,8 @@
 package it.ncc.BackAndNcc.prenotazioni;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,13 +21,13 @@ public class PrenotazioneService {
 
         double pricePerKm;
         if (distanceKm < 10) {
-            pricePerKm = 5.0; // Sotto i 10 km
+            pricePerKm = 5.0;
         } else if (distanceKm >= 10 && distanceKm < 20) {
-            pricePerKm = 3.0; // Da 10 a 20 km
+            pricePerKm = 3.0;
         } else if (distanceKm >= 20 && distanceKm < 40) {
-            pricePerKm = 2.3; // Da 20 a 40 km
+            pricePerKm = 2.3;
         } else {
-            pricePerKm = 1.6; // Oltre i 40 km
+            pricePerKm = 1.6;
         }
 
 
@@ -37,7 +39,7 @@ public class PrenotazioneService {
         double passengerSupplement = 0.0;
         double luggageSupplement = 0.0;
 
-        // Supplemento per passeggeri
+
         if (passengers == 3 || passengers == 4) {
             passengerSupplement += 12.0; // Supplemento per 3 o 4 persone, indipendentemente dai bagagli
         } else if (passengers >= 5 && passengers <= 7) {
@@ -46,12 +48,12 @@ public class PrenotazioneService {
             passengerSupplement += 20.0 + 10.0; // Supplemento per 7 persone (20 €) + 10 €
         }
 
-        // Supplemento per bagagli
+
         if (totalLuggage > passengers) {
             luggageSupplement += 5.0 * (totalLuggage - passengers); // Supplemento per ogni bagaglio in più rispetto ai passeggeri
         }
 
-        // 5. Applicare i supplementi per i seggiolini per bambini
+
         double childSeatSupplement = 0.0;
         switch (request.getChildSeats()) {
             case "1ChildSeat":
@@ -72,11 +74,19 @@ public class PrenotazioneService {
                 break;
         }
 
-        // 6. Calcolare il prezzo totale
+
         double totalPrice = basePrice + passengerSupplement + luggageSupplement + childSeatSupplement;
 
         int roundedPrice = (int) Math.round(totalPrice);
 
         return roundedPrice;
+    }
+
+    public void bookNow(@Valid PrenotazioneRequest request){
+        Prenotazione prenotazione = new Prenotazione();
+        BeanUtils.copyProperties(request, prenotazione);
+        prenotazioneRepository.save(prenotazione);
+
+
     }
 }

@@ -14,10 +14,9 @@ public class PrenotazioneService {
 
     public double priceCalculation(PriceDataRequest request) {
 
-// 1. Convertire la distanza da metri a chilometri
         double distanceKm = request.getDistanceM() / 1000.0;
 
-// 2. Determinare la tariffa al km in base alla distanza
+
         double pricePerKm;
         if (distanceKm < 10) {
             pricePerKm = 5.0; // Sotto i 10 km
@@ -29,34 +28,30 @@ public class PrenotazioneService {
             pricePerKm = 1.6; // Oltre i 40 km
         }
 
-// 3. Calcolare il costo base
+
         double basePrice = distanceKm * pricePerKm;
 
-// 4. Applicare i supplementi per passeggeri e bagagli
         int passengers = request.getPassengers();
         int totalLuggage = request.getSuitcases();
 
         double passengerSupplement = 0.0;
         double luggageSupplement = 0.0;
 
-// Supplemento per passeggeri
-        if (passengers == 3 && totalLuggage == 3) {
-            passengerSupplement += 12.0; // Supplemento per 3 persone e 3 bagagli
-        } else if (passengers >= 4 && passengers <= 7) {
-            // Per 4 persone e 4 bagagli, il prezzo è come per 3 persone e 3 bagagli (12 € incluso)
-            if (passengers > 4) {
-                passengerSupplement += 20.0; // Supplemento di 20 € una sola volta per 5-7 persone
-            }
+        // Supplemento per passeggeri
+        if (passengers == 3 || passengers == 4) {
+            passengerSupplement += 12.0; // Supplemento per 3 o 4 persone, indipendentemente dai bagagli
+        } else if (passengers >= 5 && passengers <= 7) {
+            passengerSupplement += 20.0; // Supplemento di 20 € per 5-7 persone
         } else if (passengers == 8) {
             passengerSupplement += 20.0 + 10.0; // Supplemento per 7 persone (20 €) + 10 €
         }
 
-// Supplemento per bagagli
+        // Supplemento per bagagli
         if (totalLuggage > passengers) {
             luggageSupplement += 5.0 * (totalLuggage - passengers); // Supplemento per ogni bagaglio in più rispetto ai passeggeri
         }
 
-// 5. Applicare i supplementi per i seggiolini per bambini
+        // 5. Applicare i supplementi per i seggiolini per bambini
         double childSeatSupplement = 0.0;
         switch (request.getChildSeats()) {
             case "1ChildSeat":
@@ -77,7 +72,7 @@ public class PrenotazioneService {
                 break;
         }
 
-// 6. Calcolare il prezzo totale
+        // 6. Calcolare il prezzo totale
         double totalPrice = basePrice + passengerSupplement + luggageSupplement + childSeatSupplement;
 
         int roundedPrice = (int) Math.round(totalPrice);

@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Component
 public class JwtTokenUtil {
 
-    @Value("${jwt.secret}")
+    @Value("${JWT_SECRET}")
     private String secret;
 
     @Value("${jwt.expiration}")
@@ -25,12 +25,20 @@ public class JwtTokenUtil {
 
     // Estrae il nome utente dal token JWT
     public String getUsernameFromToken(String token) {
+        System.out.println("Estrazione del nome utente dal token...");
         return getClaimFromToken(token, Claims::getSubject);
     }
 
     // Estrae la data di scadenza dal token JWT
     public Date getExpirationDateFromToken(String token) {
-        return getClaimFromToken(token, Claims::getExpiration);
+        System.out.println("Estrazione del claim dal token...");
+
+        try {
+            return getClaimFromToken(token, Claims::getExpiration);
+        } catch (Exception e) {
+            System.err.println("Errore durante l'estrazione della data di scadenza dal token: " + e.getMessage());
+            throw e; // Rilancia l'eccezione per gestirla a un livello superiore
+        }
     }
 
     // Estrae un claim specifico dal token JWT
@@ -41,6 +49,9 @@ public class JwtTokenUtil {
 
     // Estrae tutti i claims dal token JWT
     private Claims getAllClaimsFromToken(String token) {
+        
+        System.out.println("Chiave segreta utilizzata per verificare il token: " + secret);
+        System.out.println("Estrazione di tutti i claim dal token...");
         return Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(token)
@@ -55,6 +66,7 @@ public class JwtTokenUtil {
 
     // Genera un token JWT per l'utente, includendo i ruoli
     public String generateToken(UserDetails userDetails) {
+        System.out.println("Chiave segreta utilizzata per generare il token: " + secret);
         Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
         List<String> roles = authorities.stream()
                                         .map(GrantedAuthority::getAuthority)

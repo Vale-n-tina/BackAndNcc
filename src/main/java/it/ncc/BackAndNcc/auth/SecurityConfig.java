@@ -41,6 +41,7 @@ public class SecurityConfig {
                         //.requestMatchers("/api/**").permitAll()
                         .requestMatchers("/prenotazioni/price-calculation").permitAll()
                         .requestMatchers("/prenotazioni/bookNow").permitAll()
+                        .requestMatchers("/api/auth/verifyToken").permitAll()
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session

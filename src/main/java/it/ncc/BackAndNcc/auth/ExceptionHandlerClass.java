@@ -1,6 +1,7 @@
 package it.ncc.BackAndNcc.auth;
 
 
+import it.ncc.BackAndNcc.error.InvalidTokenException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
@@ -56,5 +57,9 @@ public class ExceptionHandlerClass extends ResponseEntityExceptionHandler {
 
         }
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(value = InvalidTokenException.class)
+    protected ResponseEntity<String> handleInvalidTokenException(InvalidTokenException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 }

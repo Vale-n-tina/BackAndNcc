@@ -25,5 +25,7 @@ public class AuthRunner implements ApplicationRunner {
 //        if (adminUser.isEmpty()) {
 //            appUserService.registerUser("transfer.service.contact@gmail.com", "Password1234", Set.of(Role.ROLE_ADMIN));
 //        }
+
+
     }
 }

@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Validated
 @ControllerAdvice
 @Service
@@ -89,4 +92,17 @@ public class PrenotazioneService {
 
 
     }
+    public List<PrenotazioniResponse> getPrenotazioniByDate(String date) {
+        List<Prenotazione> prenotazioni = prenotazioneRepository.findByPickUpDate(date);
+        return prenotazioni.stream()
+                .map(prenotazione -> {
+                    PrenotazioniResponse response = new PrenotazioniResponse();
+                    BeanUtils.copyProperties(prenotazione, response); // Copia le proprietà
+                    return response;
+                })
+                .collect(Collectors.toList()); // Raccogli i risultati in una lista;
+    }
+
+
+
 }

@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/prenotazioni")
 @RequiredArgsConstructor
@@ -26,5 +28,12 @@ public class PrenotazioneController {
         prenotazioneService.bookNow(request);
     }
 
+
+    @GetMapping("/by-date")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('admin')")
+    public List<PrenotazioniResponse> getPrenotazioniByDate(@RequestParam String date) {
+        return prenotazioneService.getPrenotazioniByDate(date);
+    }
 
 }

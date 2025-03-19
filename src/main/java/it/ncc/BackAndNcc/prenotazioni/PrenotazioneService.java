@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class PrenotazioneService {
     private final PrenotazioneRepository prenotazioneRepository;
 
-    public double priceCalculation(PriceDataRequest request) {
+    public double priceCalculation(@Valid PriceDataRequest request) {
 
         double distanceKm = request.getDistanceM() / 1000.0;
 

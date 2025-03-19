@@ -17,10 +17,9 @@ public class Tour {
     private Long id;
     private String pickUp;
     private String dropOff;
-    private String address;
+    private int passengers;
     private String date;
     private String time;
-    private int passengers;
     @ElementCollection
     private List<String> optionalStops;
     private String passengerName;

@@ -49,7 +49,8 @@ public class JwtTokenUtil {
 
     // Estrae tutti i claims dal token JWT
     private Claims getAllClaimsFromToken(String token) {
-        
+        token = token.replace("\"", "");
+        System.out.println("Token ricevuto: " + token);
         System.out.println("Chiave segreta utilizzata per verificare il token: " + secret);
         System.out.println("Estrazione di tutti i claim dal token...");
         return Jwts.parser()

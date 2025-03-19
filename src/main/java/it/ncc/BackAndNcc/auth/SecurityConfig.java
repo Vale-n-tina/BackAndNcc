@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         //.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // Accesso libero a Swagger
                         //.requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/prenotazioni/by-date").hasRole("ADMIN")
                         .requestMatchers("/prenotazioni/price-calculation").permitAll()
                         .requestMatchers("/prenotazioni/bookNow").permitAll()
                         .requestMatchers("/api/auth/verifyToken").permitAll()

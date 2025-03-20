@@ -91,6 +91,10 @@ public class TourService {
         int minutes = totalMinutes % 60;
 
         // Formatta la durata come "X ore e Y minuti"
-        return hours + " ore e " + minutes + " minuti";
+        if (minutes == 0) {
+            return hours + ""; // Restituisce solo le ore se i minuti sono 0
+        } else {
+            return hours + ":" + minutes; // Restituisce ore:minuti se i minuti sono diversi da 0
+        }
     }
 }

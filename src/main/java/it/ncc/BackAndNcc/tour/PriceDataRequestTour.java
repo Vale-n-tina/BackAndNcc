@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PriceDataRequest {
+public class PriceDataRequestTour {
     private List<String> optionalStops;
     private int passengers;
     private String startLocation;

@@ -88,7 +88,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             "/sw.js",
             "/prenotazioni/price-calculation",
             "/prenotazioni/bookNow",
-            "/api/auth/verifyToken"
+            "/api/auth/verifyToken",
+            "/tour/price-calculation"
     );
 
 

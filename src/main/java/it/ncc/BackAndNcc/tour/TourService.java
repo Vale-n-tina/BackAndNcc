@@ -1,12 +1,19 @@
 package it.ncc.BackAndNcc.tour;
 
 
+import it.ncc.BackAndNcc.prenotazioni.Prenotazione;
+import it.ncc.BackAndNcc.prenotazioni.PrenotazioneRequest;
+import it.ncc.BackAndNcc.prenotazioni.PrenotazioniResponse;
 import it.ncc.BackAndNcc.prenotazioni.PriceDataRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Validated
 @ControllerAdvice
@@ -17,6 +24,7 @@ public class TourService {
 
 
     public TourResponsePriceAndDuration priceCalculation(@Valid PriceDataRequestTour request){
+
         double basePrice = 300;
 
         // Costo aggiuntivo per persone
@@ -31,6 +39,8 @@ public class TourService {
         double startLocationCost = calculateLocationCost(request.getStartLocation(), request.getPassengers());
         double endLocationCost = calculateLocationCost(request.getEndLocation(), request.getPassengers());
 
+
+
         // Prezzo totale
         double totalPrice = basePrice + passengerCost + stopCost + startLocationCost + endLocationCost;
 
@@ -42,6 +52,7 @@ public class TourService {
     }
 
     private double calculateLocationCost(String location, int passengers) {
+
         switch (location) {
             case "Rome":
                 return 0; // Roma non ha costi aggiuntivi
@@ -57,22 +68,18 @@ public class TourService {
     }
 
     private double calculateAirportCost(int passengers, int baseCost, int increment) {
-        if (passengers == 1) {
-            return 0; // Nessun costo aggiuntivo per 1 persona
-        } else if (passengers <= 8) {
-            return baseCost + (passengers - 2) * increment;
+        if (passengers <= 8) {
+            return baseCost + (passengers - 1) * increment; // Cambia (passengers - 2) in (passengers - 1)
         } else {
-            return baseCost + 6 * increment; // Massimo 110€ per Fiumicino e 100€ per Ciampino
+            return baseCost + 7 * increment; // Massimo 110€ per Fiumicino e 100€ per Ciampino
         }
     }
 
     private double calculateDockCost(int passengers) {
-        if (passengers == 1) {
-            return 0; // Nessun costo aggiuntivo per 1 persona
-        } else if (passengers <= 8) {
-            return 125 + (passengers - 2) * 10;
+        if (passengers <= 8) {
+            return 125 + (passengers - 1) * 10; // Cambia (passengers - 2) in (passengers - 1)
         } else {
-            return 185; // Massimo 185€ per Civitavecchia Dock
+            return 195; // Massimo 195€ per Civitavecchia Dock
         }
     }
 
@@ -97,4 +104,41 @@ public class TourService {
             return hours + ":" + minutes; // Restituisce ore:minuti se i minuti sono diversi da 0
         }
     }
+
+    public List<TourResponse> getTourByDate(String date) {
+        List<Tour> tours = tourRepository.findByDate(date);
+        System.out.println(tours);
+        return tours.stream()
+                .map(tour -> {
+                    TourResponse response = new TourResponse();
+                    BeanUtils.copyProperties(tour, response); // Copia le proprietà
+                    return response;
+                })
+                .collect(Collectors.toList()); // Raccogli i risultati in una lista;
+
+    }
+
+    public void bookNow(@Valid TourResponse request){
+        Tour tour = new Tour();
+        BeanUtils.copyProperties(request, tour);
+        tourRepository.save(tour);
+
+
+    }
+
+    /*public void deleteTour(Long tourId) {
+        // Trova il Tour
+        Tour tour = tourRepository.findById(tourId)
+                .orElseThrow(() -> new RuntimeException("Tour non trovato"));
+
+        // Svuota la lista optionalStops
+        tour.getOptionalStops().clear();
+
+        // Salva il Tour (questo rimuoverà i record dalla tabella tour_optional_stops)
+        tourRepository.save(tour);
+
+        // Ora puoi eliminare il Tour
+        tourRepository.delete(tour);
+    }*/
+
 }

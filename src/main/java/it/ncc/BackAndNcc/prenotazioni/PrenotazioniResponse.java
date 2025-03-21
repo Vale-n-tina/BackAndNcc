@@ -23,6 +23,8 @@ public class PrenotazioniResponse {
     private String requests;
     private String nameAndSurname;
     private String email;
+    private double price;
+    private String phone;
 
 
 }

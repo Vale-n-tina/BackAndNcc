@@ -31,9 +31,10 @@ public class PrenotazioneController {
 
     @GetMapping("/by-date")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<PrenotazioniResponse> getPrenotazioniByDate(@RequestParam String date) {
         return prenotazioneService.getPrenotazioniByDate(date);
+
     }
 
 }

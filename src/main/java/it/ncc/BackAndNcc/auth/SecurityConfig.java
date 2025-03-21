@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers("/prenotazioni/price-calculation").permitAll()
                         .requestMatchers("/tour/price-calculation").permitAll()
                         .requestMatchers("/prenotazioni/bookNow").permitAll()
+                        .requestMatchers("/tour/bookNow").permitAll()
                         .requestMatchers("/api/auth/verifyToken").permitAll()
                         .anyRequest().permitAll()
                 )

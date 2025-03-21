@@ -94,6 +94,7 @@ public class PrenotazioneService {
     }
     public List<PrenotazioniResponse> getPrenotazioniByDate(String date) {
         List<Prenotazione> prenotazioni = prenotazioneRepository.findByPickUpDate(date);
+        System.out.println(prenotazioni);
         return prenotazioni.stream()
                 .map(prenotazione -> {
                     PrenotazioniResponse response = new PrenotazioniResponse();
@@ -101,6 +102,7 @@ public class PrenotazioneService {
                     return response;
                 })
                 .collect(Collectors.toList()); // Raccogli i risultati in una lista;
+
     }
 
 

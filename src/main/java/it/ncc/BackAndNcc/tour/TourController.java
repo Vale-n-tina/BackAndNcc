@@ -37,4 +37,11 @@ public class TourController {
     public void bookNow(@RequestBody TourResponse request) {
         tourService.bookNow(request);
     }
+
+    @DeleteMapping("/delete/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void deleteTour(@PathVariable Long id) {
+        tourService.deleteTour(id);
+    }
 }

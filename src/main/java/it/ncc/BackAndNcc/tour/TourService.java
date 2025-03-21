@@ -126,7 +126,7 @@ public class TourService {
 
     }
 
-    /*public void deleteTour(Long tourId) {
+    public void deleteTour(Long tourId) {
         // Trova il Tour
         Tour tour = tourRepository.findById(tourId)
                 .orElseThrow(() -> new RuntimeException("Tour non trovato"));
@@ -139,6 +139,6 @@ public class TourService {
 
         // Ora puoi eliminare il Tour
         tourRepository.delete(tour);
-    }*/
+    }
 
 }

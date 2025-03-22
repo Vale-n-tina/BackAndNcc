@@ -5,6 +5,7 @@ import it.ncc.BackAndNcc.prenotazioni.Prenotazione;
 import it.ncc.BackAndNcc.prenotazioni.PrenotazioneRequest;
 import it.ncc.BackAndNcc.prenotazioni.PrenotazioniResponse;
 import it.ncc.BackAndNcc.prenotazioni.PriceDataRequest;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -12,6 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -107,14 +111,15 @@ public class TourService {
 
     public List<TourResponse> getTourByDate(String date) {
         List<Tour> tours = tourRepository.findByDate(date);
-        System.out.println(tours);
+
         return tours.stream()
                 .map(tour -> {
                     TourResponse response = new TourResponse();
                     BeanUtils.copyProperties(tour, response); // Copia le proprietà
                     return response;
                 })
-                .collect(Collectors.toList()); // Raccogli i risultati in una lista;
+                .sorted(Comparator.comparing(response -> LocalTime.parse(response.getTime())))
+                .collect(Collectors.toList());
 
     }
 
@@ -127,18 +132,24 @@ public class TourService {
     }
 
     public void deleteTour(Long tourId) {
-        // Trova il Tour
+
         Tour tour = tourRepository.findById(tourId)
                 .orElseThrow(() -> new RuntimeException("Tour non trovato"));
-
-        // Svuota la lista optionalStops
         tour.getOptionalStops().clear();
-
-        // Salva il Tour (questo rimuoverà i record dalla tabella tour_optional_stops)
         tourRepository.save(tour);
-
-        // Ora puoi eliminare il Tour
         tourRepository.delete(tour);
+    }
+
+    public TourResponse updateTour(Long id, Tour request) {
+        Tour existingTour = tourRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Tour non trovato con ID: " + id));
+        BeanUtils.copyProperties(request, existingTour, "id");
+        Tour updatedTour = tourRepository.save(existingTour);
+        TourResponse response = new TourResponse();
+        BeanUtils.copyProperties(updatedTour, response);
+
+        return response;
+
     }
 
 }

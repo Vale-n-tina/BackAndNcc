@@ -1,5 +1,8 @@
 package it.ncc.BackAndNcc.prenotazioni;
 
+import it.ncc.BackAndNcc.tour.Tour;
+import it.ncc.BackAndNcc.tour.TourResponse;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -7,6 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -101,10 +107,29 @@ public class PrenotazioneService {
                     BeanUtils.copyProperties(prenotazione, response); // Copia le proprietà
                     return response;
                 })
+                .sorted(Comparator.comparing(response -> LocalTime.parse(response.getPickUpTime())))
                 .collect(Collectors.toList()); // Raccogli i risultati in una lista;
 
     }
 
+    public void deletePrenotazione(Long tourId) {
+        // Trova il Tour
+        Prenotazione prenotazione= prenotazioneRepository.findById(tourId)
+                .orElseThrow(() -> new RuntimeException("Tour non trovato"));
 
+       prenotazioneRepository.delete(prenotazione);
+    }
+
+    public PrenotazioniResponse updatePrenotazione(Long id, Prenotazione request) {
+        Prenotazione existingTour = prenotazioneRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Prenotazione non trovato con ID: " + id));
+        BeanUtils.copyProperties(request, existingTour, "id");
+        Prenotazione updatePrenotazione = prenotazioneRepository.save(existingTour);
+        PrenotazioniResponse response = new PrenotazioniResponse();
+        BeanUtils.copyProperties(updatePrenotazione, response);
+
+        return response;
+
+    }
 
 }

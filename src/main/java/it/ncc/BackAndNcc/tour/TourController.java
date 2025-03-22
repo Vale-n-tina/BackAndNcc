@@ -44,4 +44,11 @@ public class TourController {
     public void deleteTour(@PathVariable Long id) {
         tourService.deleteTour(id);
     }
+
+    @PutMapping("/update/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public TourResponse updateTour(@PathVariable Long id, @RequestBody Tour request) {
+        return tourService.updateTour(id, request);
+    }
 }

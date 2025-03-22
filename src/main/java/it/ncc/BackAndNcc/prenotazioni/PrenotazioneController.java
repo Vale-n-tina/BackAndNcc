@@ -1,5 +1,7 @@
 package it.ncc.BackAndNcc.prenotazioni;
 
+import it.ncc.BackAndNcc.tour.Tour;
+import it.ncc.BackAndNcc.tour.TourResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,6 +37,20 @@ public class PrenotazioneController {
     public List<PrenotazioniResponse> getPrenotazioniByDate(@RequestParam String date) {
         return prenotazioneService.getPrenotazioniByDate(date);
 
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void deletePrenotazione(@PathVariable Long id) {
+        prenotazioneService.deletePrenotazione(id);
+    }
+
+    @PutMapping("/update/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public PrenotazioniResponse updatePrenotazione(@PathVariable Long id, @RequestBody Prenotazione request) {
+        return prenotazioneService.updatePrenotazione(id, request);
     }
 
 }

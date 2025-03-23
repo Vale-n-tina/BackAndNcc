@@ -1,10 +1,13 @@
 package it.ncc.BackAndNcc.tour;
 
 
+import it.ncc.BackAndNcc.mail.EmailService;
+import it.ncc.BackAndNcc.mail.PdfGenerator;
 import it.ncc.BackAndNcc.prenotazioni.Prenotazione;
 import it.ncc.BackAndNcc.prenotazioni.PrenotazioneRequest;
 import it.ncc.BackAndNcc.prenotazioni.PrenotazioniResponse;
 import it.ncc.BackAndNcc.prenotazioni.PriceDataRequest;
+import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Comparator;
@@ -25,6 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TourService {
     private final TourRepository tourRepository;
+    private final EmailService emailService;
 
 
     public TourResponsePriceAndDuration priceCalculation(@Valid PriceDataRequestTour request){
@@ -123,11 +128,77 @@ public class TourService {
 
     }
 
+
     public void bookNow(@Valid TourResponse request){
         Tour tour = new Tour();
         BeanUtils.copyProperties(request, tour);
         tourRepository.save(tour);
+        try {
+            String htmlContent = "<html>"
+                    + "<body style='background-color: #f4f7f6; font-family: Arial, sans-serif; padding: 30px; margin: 0; color: #333;'>"
+                    + "<div style='max-width: 800px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);'>"
+                    + "<h1 style='color:#292A2D; margin-botton:40px; text-align: center'>"
+                    + " <strong> Booking Details <strong/>"
+                    + "</h1>"
+                    + "<h5 style='font-size: 18px; margin-bottom: 20px; font-weight: 300; color: #444; line-height: 1.6;text-align: center'>"
+                    + "Hello " + request.getPassengerName() + ", below you will find all the details of your reservation. If you have any questions, feel free to reply to this email."
+                    + "</h5>"
+                    + "<p style='color: #444; margin-left: 20px; font-size: 16px; line-height: 1.8;'>"
+                    + "<strong style='color: #333;'>Reservation ID:</strong> " + tour.getId() + ""
+                    + "</p>"
+                    + "<p style='color: #444; margin-left: 20px; font-size: 16px; line-height: 1.8;'>"
+                    + "<strong style='color: #333;'>Passenger Name:</strong>"
+                    + "<span style='background-color: #ffff99; padding: 6px 10px; border-radius: 4px; font-weight: bold; color: #333;'>"
+                    + request.getPassengerName() + ""
+                    + "</span>"
+                    + "</p>"
+                    + "<p style='color: #444; margin-left: 20px; font-size: 16px; line-height: 1.8;'>"
+                    + "<strong style='color: #333;'>Passengers:</strong> " + request.getPassengers() + ""
+                    + "</p>"
+                    + "<p style='color: #444; margin-left: 20px; font-size: 16px; line-height: 1.8;'>"
+                    + "<strong style='color: #333;'>Date:</strong> " + request.getDate() + ""
+                    + "</p>"
+                    + "<p style='color: #444; margin-left: 20px; font-size: 16px; line-height: 1.8;'>"
+                    + "<strong style='color: #333;'>Hour:</strong> " + request.getTime() + ""
+                    + "</p>"
+                    + "<p style='color: #444; margin-left: 20px; font-size: 16px; line-height: 1.8;'>"
+                    + "<strong style='color: #333;'>Pickup:</strong> " + request.getPickUp() + ""
+                    + "</p>"
+                    + "<p style='color: #444; margin-left: 20px; font-size: 16px; line-height: 1.8;'>"
+                    + "<strong style='color: #333;'>Dropoff:</strong> " + request.getDropOff() + ""
+                    + "</p>"
+                    + "<!-- Email -->"
+                    + "<p style='color: #444; margin-left: 20px; font-size: 16px; line-height: 1.8;'>"
+                    + "<strong style='color: #333;'>Email:</strong> " + request.getEmail() + ""
+                    + "</p>"
+                    + "<p style='color: #444; margin-left: 20px; font-size: 16px; line-height: 1.8;'>"
+                    + "<strong style='color: #333;'>Phone:</strong> " + "+" + request.getPhoneNumber() + ""
+                    + "</p>"
+                    + "<p style='color: #444; margin-left: 20px; font-size: 16px; line-height: 1.8;'>"
+                    + "<strong style='color: #333;'>Time tour:</strong> " + request.getDuration()+ "hours" + ""
+                    + "</p>"
+                    + "<p style='color: #444; margin-left: 20px; font-size: 16px; line-height: 1.8;'>"
+                    + "<strong style='color: #333;'>Price:</strong> " + request.getPrice() + "€" + ""
+                    + "</p>"
+                    + "<!-- Footer -->"
+                    + "<div style='text-align: center; margin-top: 40px; font-size: 14px; color: #888; margin-bottom: 30px;'>"
+                    + "<p style='margin: 0;'>Thank you for choosing our services!</p>"
+                    + "<p style='margin-top: 5px;'>For further assistance, don't hesitate to reach out to us.</p>"
+                    + "</div>"
+                    + "</div>"
+                    + "</body>"
+                    + "</html>";
 
+              String filePath = "booking_details.pdf";
+              PdfGenerator.generateHtmlPdf(filePath, htmlContent);
+
+            File pdfFile = new File(filePath);
+
+            emailService.sendEmail(request.getEmail(), "Confirm booking","File pdf", pdfFile );
+            pdfFile.delete();
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 

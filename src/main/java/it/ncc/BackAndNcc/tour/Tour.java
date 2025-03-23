@@ -28,6 +28,7 @@ public class Tour {
     private double price;
     private String startLocation;
     private String endLocation;
+    private String duration;
 
 
 }

@@ -187,7 +187,7 @@ public class PrenotazioneService {
        prenotazioneRepository.delete(prenotazione);
     }
 
-    public PrenotazioniResponse updatePrenotazione(Long id, Prenotazione request) {
+    public PrenotazioniResponse updatePrenotazione(Long id,@Valid Prenotazione request) {
         Prenotazione existingTour = prenotazioneRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Prenotazione non trovato con ID: " + id));
         BeanUtils.copyProperties(request, existingTour, "id");

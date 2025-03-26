@@ -49,6 +49,8 @@ public class SecurityConfig {
                         .requestMatchers("/prenotazioni/bookNow").permitAll()
                         .requestMatchers("/tour/bookNow").permitAll()
                         .requestMatchers("/api/auth/verifyToken").permitAll()
+                        .requestMatchers("/payments/create-payment-intent").permitAll()
+
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session

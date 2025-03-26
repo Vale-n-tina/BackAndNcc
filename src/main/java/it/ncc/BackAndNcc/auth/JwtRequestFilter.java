@@ -90,7 +90,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             "/prenotazioni/bookNow",
             "/api/auth/verifyToken",
             "/tour/price-calculation",
-            "/tour/bookNow"
+            "/tour/bookNow",
+            "/payments/create-payment-intent"
     );
 
 

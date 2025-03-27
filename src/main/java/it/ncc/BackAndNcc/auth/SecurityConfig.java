@@ -52,6 +52,7 @@ public class SecurityConfig {
                         .requestMatchers("/payments/create-payment-intent").permitAll()
                         .requestMatchers("/prenotazioni/by-id").hasRole("ADMIN")
                         .requestMatchers("/tour/by-date").hasRole("ADMIN")
+                        .requestMatchers("/api/contact").permitAll()
 
                         .anyRequest().permitAll()
                 )

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PaymentRequest {
-    private Long amount; // Importo in euro
+    private Long amount;
     private String currency;
     private String prenotazioneEmail;
 }

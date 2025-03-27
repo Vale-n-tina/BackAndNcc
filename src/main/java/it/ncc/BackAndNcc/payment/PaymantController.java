@@ -24,7 +24,9 @@ public class PaymantController {
     @ResponseStatus(HttpStatus.OK)
     public PaymentIntentResponse createPaymentIntent(@RequestBody PaymentRequest request) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
-
+        if (request.getAmount() <= 0) {
+            throw new IllegalArgumentException("L'importo deve essere positivo");
+        }
         PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
                 .setAmount(request.getAmount() )
                 .setCurrency("eur")

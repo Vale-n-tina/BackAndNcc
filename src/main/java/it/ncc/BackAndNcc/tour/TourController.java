@@ -51,4 +51,12 @@ public class TourController {
     public TourResponse updateTour(@PathVariable Long id, @RequestBody Tour request) {
         return tourService.updateTour(id, request);
     }
+
+    @GetMapping("/by-id/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public TourResponse getTourById(@PathVariable Long id) {
+        return  tourService.getTourById(id);
+
+    }
 }

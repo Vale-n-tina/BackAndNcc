@@ -53,4 +53,12 @@ public class PrenotazioneController {
         return prenotazioneService.updatePrenotazione(id, request);
     }
 
+    @GetMapping("/by-id/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public PrenotazioniResponse getPrenotazioniById(@PathVariable Long id) {
+        return prenotazioneService.getPrenotazioniById(id);
+
+    }
+
 }

@@ -12,6 +12,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -28,8 +29,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class TourService {
+
     private final TourRepository tourRepository;
     private final EmailService emailService;
+    @Value("${company.email}")
+    private String companyEmail;
+
 
 
     public TourResponsePriceAndDuration priceCalculation(@Valid PriceDataRequestTour request){
@@ -140,9 +145,9 @@ public class TourService {
                     + "<h1 style='color:#292A2D; margin-botton:40px; text-align: center'>"
                     + " <strong> Booking Details <strong/>"
                     + "</h1>"
-                    + "<h5 style='font-size: 18px; margin-bottom: 20px; font-weight: 300; color: #444; line-height: 1.6;text-align: center'>"
+                    + "<p style='font-size: 14px; margin-bottom: 20px; font-weight: 300; color: #444; line-height: 1.6;'>"
                     + "Hello " + request.getPassengerName() + ", below you will find all the details of your reservation. If you have any questions, feel free to reply to this email."
-                    + "</h5>"
+                    + "</p>"
                     + "<p style='color: #444; margin-left: 20px; font-size: 16px; line-height: 1.8;'>"
                     + "<strong style='color: #333;'>Reservation ID:</strong> " + tour.getId() + ""
                     + "</p>"
@@ -194,7 +199,8 @@ public class TourService {
 
             File pdfFile = new File(filePath);
 
-            emailService.sendEmail(request.getEmail(), "Confirm booking","File pdf", pdfFile );
+            emailService.sendEmail(request.getEmail(), "Confirm booking","Hi "+ request.getPassengerName() +  "," +" Thank you for booking with us! Your reservation has been confirmed. Please find the details attached.", pdfFile );
+            emailService.sendEmail(companyEmail, "Nuova prenotazione" + tour.getId() ,"vedere allegato pdf" ,pdfFile);
             pdfFile.delete();
         } catch (MessagingException e) {
             throw new RuntimeException(e);
@@ -220,6 +226,17 @@ public class TourService {
         BeanUtils.copyProperties(updatedTour, response);
 
         return response;
+
+    }
+
+
+    public TourResponse getTourById (Long id) {
+        Tour tour = tourRepository.findById(id)
+               .orElseThrow(() -> new EntityNotFoundException("Tour non trovato con ID: " + id));
+        TourResponse response = new TourResponse();
+        BeanUtils.copyProperties(tour, response);
+        return response;
+
 
     }
 

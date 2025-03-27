@@ -9,6 +9,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -27,6 +28,9 @@ import java.util.stream.Collectors;
 public class PrenotazioneService {
     private final PrenotazioneRepository prenotazioneRepository;
     private final EmailService emailService;
+    @Value("${company.email}")
+    private String companyEmail;
+
 
     public double priceCalculation(@Valid PriceDataRequest request) {
 
@@ -107,9 +111,9 @@ public class PrenotazioneService {
                     + "<h1 style='color:#292A2D; margin-botton:40px; text-align: center'>"
                     + " <strong> Booking Details <strong/>"
                     + "</h1>"
-                    + "<h5 style='font-size: 18px; margin-bottom: 20px; font-weight: 300; color: #444; line-height: 1.6;text-align: center'>"
+                    + "<p style='font-size: 14px; margin-bottom: 20px; font-weight: 300; color: #444; line-height: 1.6;'>"
                     + "Hello " + request.getNameAndSurname() + ", below you will find all the details of your reservation. If you have any questions, feel free to reply to this email."
-                    + "</h5>"
+                    + "</p>"
                     + "<p style='color: #444; margin-left: 20px; font-size: 16px; line-height: 1.8;'>"
                     + "<strong style='color: #333;'>Reservation ID:</strong> " + prenotazione.getId() + ""
                     + "</p>"
@@ -157,7 +161,9 @@ public class PrenotazioneService {
 
             File pdfFile = new File(filePath);
 
-            emailService.sendEmail(request.getEmail(), "Confirm booking","File pdf", pdfFile );
+            emailService.sendEmail(request.getEmail(), "Confirm booking","Hi "+ request.getNameAndSurname() +  "," +" Thank you for booking with us! Your reservation has been confirmed. Please find the details attached.", pdfFile );
+
+            emailService.sendEmail(companyEmail, "Nuova prenotazione" + prenotazione.getId() ,"vedere allegato pdf" ,pdfFile);
             pdfFile.delete();
         } catch (MessagingException e) {
             throw new RuntimeException(e);
@@ -194,6 +200,18 @@ public class PrenotazioneService {
         Prenotazione updatePrenotazione = prenotazioneRepository.save(existingTour);
         PrenotazioniResponse response = new PrenotazioniResponse();
         BeanUtils.copyProperties(updatePrenotazione, response);
+
+        return response;
+
+    }
+
+
+    public PrenotazioniResponse getPrenotazioniById(Long id) {
+        Prenotazione prenotazione = prenotazioneRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Prenotazione non trovato con ID: " + id));
+
+        PrenotazioniResponse response = new PrenotazioniResponse();
+        BeanUtils.copyProperties(prenotazione, response);
 
         return response;
 

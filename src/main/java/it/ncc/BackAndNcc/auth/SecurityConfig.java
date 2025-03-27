@@ -50,6 +50,8 @@ public class SecurityConfig {
                         .requestMatchers("/tour/bookNow").permitAll()
                         .requestMatchers("/api/auth/verifyToken").permitAll()
                         .requestMatchers("/payments/create-payment-intent").permitAll()
+                        .requestMatchers("/prenotazioni/by-id").hasRole("ADMIN")
+                        .requestMatchers("/tour/by-date").hasRole("ADMIN")
 
                         .anyRequest().permitAll()
                 )

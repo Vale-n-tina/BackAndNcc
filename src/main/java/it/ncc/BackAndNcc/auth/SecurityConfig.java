@@ -53,6 +53,8 @@ public class SecurityConfig {
                         .requestMatchers("/prenotazioni/by-id").hasRole("ADMIN")
                         .requestMatchers("/tour/by-date").hasRole("ADMIN")
                         .requestMatchers("/api/contact").permitAll()
+                        .requestMatchers("/prenotazioni/maps-key").permitAll()
+
 
                         .anyRequest().permitAll()
                 )

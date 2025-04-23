@@ -3,7 +3,9 @@ package it.ncc.BackAndNcc.prenotazioni;
 import it.ncc.BackAndNcc.tour.Tour;
 import it.ncc.BackAndNcc.tour.TourResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PrenotazioneController {
     public final PrenotazioneService prenotazioneService;
+    @Value("${google.maps.api.key}")
+    private String googleMapsApiKey;
 
     @PostMapping("/price-calculation")
     @ResponseStatus(HttpStatus.OK)
@@ -61,6 +65,11 @@ public class PrenotazioneController {
 
     }
 
-    
+    @GetMapping("/maps-key")
+    @PreAuthorize("permitAll()") // O qualsiasi ruolo tu voglia richiedere
+    public ApiKeyResponse getGoogleMapsApiKey() {
+        return new ApiKeyResponse(googleMapsApiKey);
+    }
+
 
 }

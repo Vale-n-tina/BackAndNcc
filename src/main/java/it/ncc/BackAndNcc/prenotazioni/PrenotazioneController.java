@@ -72,4 +72,14 @@ public class PrenotazioneController {
     }
 
 
+    @PutMapping("/{id}/update-driver")
+    public ResponseEntity<Prenotazione> updateDriverDetails(
+            @PathVariable Long id,
+            @RequestBody DriverDetailsRequest updateDTO) {
+
+        Prenotazione updated = prenotazioneService.updateDriverDetails(id, updateDTO);
+        return ResponseEntity.ok(updated);
+    }
+
+
 }

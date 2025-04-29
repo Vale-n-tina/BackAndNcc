@@ -35,4 +35,5 @@ public class PrenotazioneRequest {
     private String email;
     private String phone;
     private double price;
+
 }

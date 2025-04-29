@@ -25,6 +25,11 @@ public class PrenotazioniResponse {
     private String email;
     private double price;
     private String phone;
+    private String driverName;
+    private String driverPhone;
+    private String driverDetails;
+    private Boolean driverPaid;
+
 
 
 }

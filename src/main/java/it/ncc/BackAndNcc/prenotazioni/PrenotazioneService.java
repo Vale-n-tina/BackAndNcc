@@ -217,4 +217,26 @@ public class PrenotazioneService {
 
     }
 
+    public Prenotazione updateDriverDetails(Long id, DriverDetailsRequest updateDTO) {
+        Prenotazione prenotazione = prenotazioneRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Prenotazione non trovata"));
+
+        if(updateDTO.getDriverName() != null) {
+            prenotazione.setDriverName(updateDTO.getDriverName());
+        }
+        if(updateDTO.getDriverPhone() != null) {
+            prenotazione.setDriverPhone(updateDTO.getDriverPhone());
+        }
+        if(updateDTO.getDriverDetails() != null) {
+            prenotazione.setDriverDetails(updateDTO.getDriverDetails());
+        }
+        if(updateDTO.getDriverPaid() != null) {
+            prenotazione.setDriverPaid(updateDTO.getDriverPaid());
+        }
+
+        return prenotazioneRepository.save(prenotazione);
+    }
+
+
+
 }

@@ -31,6 +31,11 @@ public class Prenotazione {
     private String email;
     private String phone;
     private Double price;
-    
+    private String driverName;
+    private String driverPhone;
+    private String driverDetails;
+    @Column(name = "driver_paid", nullable = false, columnDefinition = "boolean default false")
+    private Boolean driverPaid = false;
+
 
 }

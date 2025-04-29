@@ -29,6 +29,12 @@ public class Tour {
     private String startLocation;
     private String endLocation;
     private String duration;
+    private String driverName;
+    private String driverPhone;
+    private String driverDetails;
+    @Column(name = "driver_paid", nullable = false, columnDefinition = "boolean default false")
+    private Boolean driverPaid = false;
+
 
 
 }

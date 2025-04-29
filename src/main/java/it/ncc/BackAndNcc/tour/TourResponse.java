@@ -25,5 +25,10 @@ public class TourResponse {
     private String startLocation;
     private String endLocation;
     private String duration;
+    private String driverName;
+    private String driverPhone;
+    private String driverDetails;
+    private Boolean driverPaid;
+
 
 }

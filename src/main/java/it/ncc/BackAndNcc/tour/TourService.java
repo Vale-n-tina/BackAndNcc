@@ -3,10 +3,7 @@ package it.ncc.BackAndNcc.tour;
 
 import it.ncc.BackAndNcc.mail.EmailService;
 import it.ncc.BackAndNcc.mail.PdfGenerator;
-import it.ncc.BackAndNcc.prenotazioni.Prenotazione;
-import it.ncc.BackAndNcc.prenotazioni.PrenotazioneRequest;
-import it.ncc.BackAndNcc.prenotazioni.PrenotazioniResponse;
-import it.ncc.BackAndNcc.prenotazioni.PriceDataRequest;
+import it.ncc.BackAndNcc.prenotazioni.*;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -238,6 +235,25 @@ public class TourService {
         return response;
 
 
+    }
+    public Tour updateDriverDetails(Long id, DriverDetailsRequest updateDTO) {
+        Tour tour = tourRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tour non trovato"));
+
+        if(updateDTO.getDriverName() != null) {
+            tour.setDriverName(updateDTO.getDriverName());
+        }
+        if(updateDTO.getDriverPhone() != null) {
+            tour.setDriverPhone(updateDTO.getDriverPhone());
+        }
+        if(updateDTO.getDriverDetails() != null) {
+            tour.setDriverDetails(updateDTO.getDriverDetails());
+        }
+        if(updateDTO.getDriverPaid() != null) {
+            tour.setDriverPaid(updateDTO.getDriverPaid());
+        }
+
+        return tourRepository.save(tour);
     }
 
 }

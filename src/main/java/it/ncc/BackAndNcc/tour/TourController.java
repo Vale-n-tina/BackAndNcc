@@ -1,10 +1,13 @@
 package it.ncc.BackAndNcc.tour;
 
 
+import it.ncc.BackAndNcc.prenotazioni.DriverDetailsRequest;
+import it.ncc.BackAndNcc.prenotazioni.Prenotazione;
 import it.ncc.BackAndNcc.prenotazioni.PrenotazioneRequest;
 import it.ncc.BackAndNcc.prenotazioni.PrenotazioniResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,5 +61,14 @@ public class TourController {
     public TourResponse getTourById(@PathVariable Long id) {
         return  tourService.getTourById(id);
 
+    }
+
+    @PutMapping("/{id}/update-driver")
+    public ResponseEntity<Tour> updateDriverDetails(
+            @PathVariable Long id,
+            @RequestBody DriverDetailsRequest updateDTO) {
+
+        Tour updated = tourService.updateDriverDetails(id, updateDTO);
+        return ResponseEntity.ok(updated);
     }
 }

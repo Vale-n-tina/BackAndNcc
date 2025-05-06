@@ -44,7 +44,7 @@ public class TourService {
 
         // Costo aggiuntivo per fermate opzionali
         int additionalStops = Math.max(0, request.getOptionalStops().size() - 4); // Fermate oltre le 4 incluse
-        double stopCost = additionalStops * 80;
+        double stopCost = additionalStops * 60;
 
         // Costo aggiuntivo per startLocation e endLocation
         double startLocationCost = calculateLocationCost(request.getStartLocation(), request.getPassengers());
@@ -255,5 +255,18 @@ public class TourService {
 
         return tourRepository.save(tour);
     }
+
+
+    public List<TourResponse> searchTourByKeyword(String search) {
+
+        List<Tour>tours = tourRepository.searchByKeyword(search);
+
+        return tours.stream().map(tour->{
+            TourResponse response=new TourResponse();
+            BeanUtils.copyProperties(tour, response);
+            return response;
+        }).collect(Collectors.toList());
+    }
+
 
 }

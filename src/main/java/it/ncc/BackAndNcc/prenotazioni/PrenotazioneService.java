@@ -237,6 +237,16 @@ public class PrenotazioneService {
         return prenotazioneRepository.save(prenotazione);
     }
 
+    public List<PrenotazioniResponse> searchPrenotazioniByKeyword(String search) {
+
+        List<Prenotazione> prenotazioni = prenotazioneRepository.searchByKeyword(search);
+
+        return prenotazioni.stream().map(prenotazione->{
+            PrenotazioniResponse response=new PrenotazioniResponse();
+            BeanUtils.copyProperties(prenotazione, response);
+            return response;
+        }).collect(Collectors.toList());
+    }
 
 
 }

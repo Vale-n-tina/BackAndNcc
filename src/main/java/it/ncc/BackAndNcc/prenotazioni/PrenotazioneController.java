@@ -66,13 +66,15 @@ public class PrenotazioneController {
     }
 
     @GetMapping("/maps-key")
-    @PreAuthorize("permitAll()") // O qualsiasi ruolo tu voglia richiedere
+    @PreAuthorize("permitAll()")
+    @ResponseStatus(HttpStatus.OK)// O qualsiasi ruolo tu voglia richiedere
     public ApiKeyResponse getGoogleMapsApiKey() {
         return new ApiKeyResponse(googleMapsApiKey);
     }
 
 
     @PutMapping("/{id}/update-driver")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Prenotazione> updateDriverDetails(
             @PathVariable Long id,
             @RequestBody DriverDetailsRequest updateDTO) {
@@ -80,6 +82,12 @@ public class PrenotazioneController {
         Prenotazione updated = prenotazioneService.updateDriverDetails(id, updateDTO);
         return ResponseEntity.ok(updated);
     }
+    @GetMapping("/search")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<PrenotazioniResponse> searchPrenotazioni(@RequestParam String keyword){
+        return prenotazioneService.searchPrenotazioniByKeyword(keyword);
+    }
+
 
 
 }

@@ -71,4 +71,12 @@ public class TourController {
         Tour updated = tourService.updateDriverDetails(id, updateDTO);
         return ResponseEntity.ok(updated);
     }
+
+
+    @GetMapping("/search")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<TourResponse> searchPrenotazioni(@RequestParam String keyword){
+        return tourService.searchTourByKeyword(keyword);
+    }
+
 }

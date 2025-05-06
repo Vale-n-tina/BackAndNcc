@@ -56,6 +56,8 @@ public class SecurityConfig {
                         .requestMatchers("/prenotazioni/maps-key").permitAll()
                         .requestMatchers("/prenotazioni/{id}/update-driver").hasRole("ADMIN")
                         .requestMatchers("/tour/{id}/update-driver").hasRole("ADMIN")
+                        .requestMatchers("/prenotazioni/search").hasRole("ADMIN")
+                        .requestMatchers("/tour/search").hasRole("ADMIN")
 
 
 
